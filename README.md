@@ -5,6 +5,9 @@ This is my example Django setup using Docker for local development.
 It's taken me a while to piece the Docker stuff together and I'm definitely not
 confident that it's ideal. But, so far, it seems to work.
 
+Many of the notes below are so I don't forget anything; some might be useful
+to others too.
+
 
 ## Start it
 
@@ -87,6 +90,30 @@ things again:
 Or, just for the `web` container:
 
     docker-compose build web
+
+
+## Update python requirements with pipenv
+
+I'm not sure the best way to do this, so here's what I've done when wanting to
+update a pipenv requirement:
+
+1. On my local machine (not in the Docker container) create a pipenv and install requirements:
+
+        pipenv install
+
+2. Make any updates to requirements, e.g.:
+
+        pipenv update Django
+
+   That should update `Pipfile` and `Pipfile.lock`.
+
+3. Delete this pipenv virtualenv:
+
+        pipenv --rm
+
+4. Re-build the Docker `web` container, which will take noticed of the `Pipfile`  changes (`docker-compose stop` first if it's currently running):
+
+        docker-compose build web
 
 
 ## Keeping Docker tidy
