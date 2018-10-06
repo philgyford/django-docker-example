@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:10.5-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  web:
+    build: .
+    command: >
+      bash -c "python /app/manage.py migrate --noinput
+      && python /app/manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
