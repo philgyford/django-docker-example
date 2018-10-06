@@ -9,7 +9,7 @@ coverage = "==4.5.1"
 
 [packages]
 dj-database-url = "==0.5.0"
-Django = "==2.1.1"
+Django = "==2.1.2"
 gunicorn = "==19.9.0"
 psycopg2 = "==2.7.5"
 
