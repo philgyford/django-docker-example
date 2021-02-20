@@ -8,8 +8,14 @@ The Django files (in `myproject/`) are a very minimal initial project and app
 simply to indicate that things are working. Replace it with your own more
 useful code!
 
+This README should:
 
-## Start it
+1. Guide you through getting the Docker container up and running,
+2. provide a little explanation as to how it's configured, and
+3. provide some basic commands on how to work with it.
+
+
+## 1. Build and run the container
 
 1. Install Docker, e.g. [Docker for Mac](https://docs.docker.com/docker-for-mac/install/).
 
@@ -59,7 +65,7 @@ If you want to use a domain for accessing your local development website, instea
 4. You can then visit http://www.mywebsite.test:8000 (or whatever you set the domain to).
 
 
-## More explanation
+## 2. Some explanation
 
 We are creating a "container" that has our web server and database within it. Each of those is constructed from an "image".
 
@@ -78,7 +84,7 @@ The `Dockerfile` installs [pipenv](https://pipenv.readthedocs.io/en/latest/) and
 The description of the web server in `docker-compose.yml` says that when we start it up, it will always run the Django migrations and then the development webserver.
 
 
-## Ongoing work
+## 3. Ongoing work
 
 Every time you come to work on the site:
 
@@ -95,6 +101,8 @@ To access the shell in the web container:
     docker exec -it myproject_web sh
 
 Here, and below, you'll need to change `myproject_web` or `myproject_db` if you changed them to your own names while setting things up.
+
+### `./manage.py`
 
 You can then run Django management commands from there, making sure to do it within the pipenv virtual environment:
 
@@ -120,6 +128,26 @@ That will run the included shell script that, in turn, runs Django's
 You could run a specific test by doing something like:
 
     ./scripts/run-tests.sh tests.myapp.test_urls.UrlsTestCase.test_home_url
+
+### Accessing the database
+
+To access the PostgeSQL database on the command line:
+
+    docker exec -it myproject_db psql --username=mydatabaseuser --dbname=mydatabase
+
+If you want to dump the contents of your database:
+
+    docker exec -i myproject_db pg_dump -U mydatabaseuser -d mydatabase -v > your_dump_file.sql
+
+(Note: that comamnd and the following two use a `-i` option, instead of the `-it` options we've used previously.)
+
+To import a plain text SQL file:
+
+    docker exec -i myproject_db psql -U mydatabaseuser -d mydatabase -v < your_dump_file.sql
+
+Or if you have a dump in tar format, use `pg_restore` instead of `psql`:
+
+    docker exec -i myproject_db pg_restore -U mydatabaseuser -d mydatabase -v < your_dump_file.tar
 
 ### Making changes
 
