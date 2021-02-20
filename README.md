@@ -2,8 +2,6 @@
 
 This is my example Django setup using Docker for local development.
 
-I am not an expert but it seems to work.
-
 The Django files (in `myproject/`) are a very minimal initial project and app
 simply to indicate that things are working. Replace it with your own more
 useful code!
@@ -13,6 +11,8 @@ This README should:
 1. Guide you through getting the Docker container up and running,
 2. provide a little explanation as to how it's configured, and
 3. provide some basic commands on how to work with it.
+
+It might also give the impression I understand 100% how everything works; this is an illusion but, nevertheless, things do seem to work.
 
 
 ## 1. Build and run the container
@@ -37,8 +37,8 @@ This README should:
 
     DJANGO_SETTINGS_MODULE=myproject.myproject.settings.development
     ```
-    
-    **NOTE:** If you changed `myproject_db` in the previous step, you should change the `POSTGRES_HOST` value to match it in the `.env` file. You can change the other postgres settings if you like, but it's not required.
+
+    **Note:** If you changed `myproject_db` in the previous step, you should change the `POSTGRES_HOST` value to match it in the `.env` file. You can change the other postgres settings if you like, but it's not required.
 
 6. On the command line, within this directory, do this to build the image and
    start the container:
@@ -51,6 +51,8 @@ This README should:
 
 8. Open http://0.0.0.0:8000 in your browser.
 
+
+### Custom domain name
 
 If you want to use a domain for accessing your local development website, instead of the IP address `0.0.0.0`, then:
 
@@ -102,19 +104,17 @@ To access the shell in the web container:
 
 Here, and below, you'll need to change `myproject_web` or `myproject_db` if you changed them to your own names while setting things up.
 
-### `./manage.py`
-
 You can then run Django management commands from there, making sure to do it within the pipenv virtual environment:
 
     pipenv run ./manage.py help
 
-Because that's a bit of a pain, solely to run `./manage.py`, we have a shortcut script you can run from your own computer (not within the Docker container):
+Because logging into the Docker container and *then* running `./manage.py` is a bit of a pain, we have a shortcut script you can run from your own computer instead (not within the Docker container):
 
     ./scripts/manage.sh help
 
 So, to create your Django project's superuser:
 
-    .scripts/manage.sh createsuperuser
+    ./scripts/manage.sh createsuperuser
 
 ### Run tests
 
@@ -130,17 +130,17 @@ You could run a specific test by doing something like:
 
 ### Accessing the database
 
-To access the PostgeSQL database on the command line:
+To access the PostgreSQL database on the command line:
 
-    docker exec -it myproject_db psql --username=mydatabaseuser --dbname=mydatabase
+    docker exec -it myproject_db psql -U mydatabaseuser -d =mydatabase
 
-If you want to dump the contents of your database:
+If you want to dump the contents of your database to a file:
 
     docker exec -i myproject_db pg_dump -U mydatabaseuser -d mydatabase -v > your_dump_file.sql
 
-(Note: that comamnd and the following two use a `-i` option, instead of the `-it` options we've used previously.)
+(**Note:** that command and the following two use a `-i` option, instead of the `-it` options we've used previously.)
 
-To import a plain text SQL file:
+To import a plain text SQL file, like the one we made above:
 
     docker exec -i myproject_db psql -U mydatabaseuser -d mydatabase -v < your_dump_file.sql
 
@@ -148,7 +148,7 @@ Or if you have a dump in tar format, use `pg_restore` instead of `psql`:
 
     docker exec -i myproject_db pg_restore -U mydatabaseuser -d mydatabase -v < your_dump_file.tar
 
-### Making changes
+### Making changes to the container
 
 If you change something in `docker-compose.yml` then you'll need to build
 things again:
@@ -158,18 +158,19 @@ things again:
 If you want to remove the containers and start again, then stop the containers, and:
 
     docker-compose rm
+    docker-compose build
 
 ### Adding or updating python modules with pipenv
 
-I *think* that the way to install new python modules, or update existing ones is to do so within the docker container, e.g.:
+I *think* that the way to install new python modules, or update existing ones, is to do so within the Docker container. e.g. to install `django-debug-toolbar` as a development dependency:
 
     docker exec -it myproject_web sh
-    pipenv install django-debug-toolbar
+    pipenv install django-debug-toolbar --dev
 
 
 ## Get in touch
 
-If you have suggestions for improving this (there are probably many ways to do so) then do let me know:
+If you spot a mistake, or something that could be improved (of which there are probably many), then do let me know:
 
 Phil Gyford  
 https://www.gyford.com  
