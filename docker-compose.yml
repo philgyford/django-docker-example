@@ -1,25 +1,33 @@
-version: '3.7'
+version: '3.9'
 
 services:
   db:
-    image: postgres:10.5-alpine
+    container_name: myproject_db
+    env_file:
+      - .env
+    image: postgres:alpine
     ports:
       - "5432:5432"
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data/
   web:
     build: .
     command: >
-      bash -c "python /app/manage.py migrate --noinput
-      && python /app/manage.py runserver 0.0.0.0:8000"
+      sh -c "
+      pipenv run python manage.py migrate &&
+      pipenv run python manage.py runserver 0.0.0.0:8000
+      "
+    container_name: myproject_web
     depends_on:
       - db
     env_file:
       - .env
     ports:
       - "8000:8000"
+    restart: unless-stopped
     volumes:
-      - .:/app
+      - .:/code
 
 volumes:
   postgres_data:

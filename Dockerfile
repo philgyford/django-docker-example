@@ -1,14 +1,25 @@
-FROM python:3.6-slim
+FROM python:3.8-alpine
 
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONFAULTHANDLER 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app
+RUN apk update && apk add --no-cache \
+    # Required for installing/upgrading postgres, Pillow, etc:
+    gcc python3-dev \
+    # Required for installing/upgrading postgres:
+    postgresql-libs postgresql-dev musl-dev
 
-# Uncomment this when https://github.com/pypa/pipenv/issues/2924 is resolved:
-#RUN pip install --upgrade pip
-RUN pip install pipenv
-COPY Pipfile /app/
-RUN pipenv install --skip-lock --system --dev
+# Set work directory
+RUN mkdir /code
+WORKDIR /code
 
-COPY . /app/
+# Install dependencies into a virtualenv
+RUN pip install --upgrade pipenv
+COPY ./Pipfile .
+COPY ./Pipfile.lock .
+RUN pipenv install --dev --deploy
+
+# Copy project code
+COPY . /code/
