@@ -1,10 +1,10 @@
 Life Orginizer Steps
-Exist:
+#Exist:
 - wallet module
 - todoTasks module
 - life event module
 - Anlytics Module
-Todo
+#Todo
 - unit test 
 - pipe line 
 - deploy on remote vcs 
