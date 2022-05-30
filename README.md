@@ -132,7 +132,7 @@ You could run a specific test by doing something like:
 
 To access the PostgreSQL database on the command line:
 
-    docker exec -it myproject_db psql -U mydatabaseuser -d =mydatabase
+    docker exec -it myproject_db psql -U mydatabaseuser -d mydatabase
 
 If you want to dump the contents of your database to a file:
 
