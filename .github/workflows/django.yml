@@ -43,7 +43,7 @@ jobs:
           IMAGE_TAG: ${{ steps.tag-number.outputs.tag }}
         run: |
           docker build -t test01 .
-          docker tag demo:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag test01:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
         
