@@ -5,6 +5,8 @@ on:
   create:
     tags:
       - .*
+  push:
+    branches: [master]
 jobs:
   ecr:
     # Name the Job
